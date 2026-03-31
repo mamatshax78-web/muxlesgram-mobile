@@ -1,0 +1,25 @@
+name: Muxlesgram-Ildizidan-Build
+on:
+  workflow_dispatch: # Bu tugma orqali o'zing yurgizasan
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Kodni yuklash
+        uses: actions/checkout@v3
+
+      - name: "Muxlesgram"ga Ildizi bilan aylantirish
+        run: |
+          # 1. Hamma joydagi Mattermost so'zini Muxlesgram qilish
+          find . -type f -exec sed -i 's/Mattermost/Muxlesgram/g' {} +
+          find . -type f -exec sed -i 's/mattermost/muxlesgram/g' {} +
+          
+          # 2. Server linkini sening linkng bilan bog'lash
+          find . -type f -name "*.js" -exec sed -i 's|http://localhost:8065|https://gossip-shortly-businesses-appraisal.trycloudflare.com|g' {} +
+
+      - name: Android APK yig'ish (Build)
+        run: |
+          chmod +x ./gradlew
+          ./gradlew assembleRelease
+
