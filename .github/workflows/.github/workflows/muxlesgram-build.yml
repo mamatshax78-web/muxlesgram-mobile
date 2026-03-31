@@ -1,25 +1,55 @@
-name: Muxlesgram-Ildizidan-Build
+name: Muxlesgram-0-to-100-Reincarnation
 on:
-  workflow_dispatch: # Bu tugma orqali o'zing yurgizasan
+  workflow_dispatch:
 
 jobs:
-  build:
+  total-rebrand:
     runs-on: ubuntu-latest
     steps:
       - name: Kodni yuklash
         uses: actions/checkout@v3
 
-      - name: "Muxlesgram"ga Ildizi bilan aylantirish
+      - name: "Genetikani O'zgartirish (Package Name)"
         run: |
-          # 1. Hamma joydagi Mattermost so'zini Muxlesgram qilish
+          # 1. Ilovaning pasportini o'zgartirish (com.muxlesgram.app)
+          find . -type f -exec sed -i 's/com.mattermost.rn/com.muxlesgram.app/g' {} +
+          
+          # 2. Ichki kodlardagi barcha havolalarni tozalash
+          find . -type f -exec sed -i 's/com\/mattermost\/rn/com\/muxlesgram\/app/g' {} +
+
+      - name: "Miyani va Ongni O'zgartirish (Server & Branding)"
+        run: |
+          # 3. Sening serveringni "yagona va abadiy" qilib joylash
+          find . -type f -name "*.js" -exec sed -i 's|http://localhost:8065|https://gossip-shortly-businesses-appraisal.trycloudflare.com|g' {} +
+          
+          # 4. Hamma joydagi Mattermost so'zini Muxlesgram qilish
           find . -type f -exec sed -i 's/Mattermost/Muxlesgram/g' {} +
           find . -type f -exec sed -i 's/mattermost/muxlesgram/g' {} +
           
-          # 2. Server linkini sening linkng bilan bog'lash
-          find . -type f -name "*.js" -exec sed -i 's|http://localhost:8065|https://gossip-shortly-businesses-appraisal.trycloudflare.com|g' {} +
+          # 5. "Powered by", Privacy Policy va About linklarini o'chirib tashlash
+          find . -type f -exec sed -i 's|https://mattermost.com|https://muxlesgram.uz|g' {} +
+          find . -type f -exec sed -i 's|Mattermost, Inc.|Muxlesgram Team|g' {} +
 
-      - name: Android APK yig'ish (Build)
+      - name: "Dizaynni va Ranglarni O'zgartirish (Tim Qora & Zamonaviy)"
         run: |
-          chmod +x ./gradlew
-          ./gradlew assembleRelease
+          # 6. Ranglarni tim qora va zamonaviy qilish (CSS/JS)
+          # Asosiy ranglarni o'zgartirish
+          find . -type f -name "*.js" -exec sed -i "s/#166de0/#000000/g" {} + # Ko'kni qora qilish
+          find . -type f -name "*.js" -exec sed -i "s/#3d3c40/#1a1a1a/g" {} + # To'q kulrangni tim qora qilish
+          find . -type f -name "*.js" -exec sed -i "s/#ffffff/#f0f0f0/g" {} + # Oqni och kulrang qilish (matn uchun)
+          
+          # 7. Telegram uslubidagi elementlarni qo'shish (masalan, suhbat pufakchalari)
+          find . -type f -name "*.js" -exec sed -i "s/border-radius: 4px/border-radius: 12px/g" {} + # Burchaklarni yumaloq qilish
 
+      - name: "Logotip va Belgilarni Joylash ('L7' Kabutar)"
+        run: |
+          # 8. Sening 'L7' logotipingni ilovaning har bir burchagiga joylash
+          # (Bu yerda logotip rasmini kod yordamida yaratib joylaymiz)
+          echo "<svg width='100' height='100'><path d='M20,50 L50,80 L80,20 Z' fill='black'/></svg>" > logo.svg
+          # (Hozircha oddiy SVG, keyinroq haqiqiy rasmni joylaymiz)
+          find . -type f -name "*.png" -exec cp logo.svg {} + # Hamma .png logolarni almashtirish (vaqtinchalik)
+
+      - name: "Ilovani Yig'ish (Assemble Muxlesgram.apk)"
+        run: |
+          chmod +x ./android/gradlew
+          cd android && ./gradlew assembleRelease
