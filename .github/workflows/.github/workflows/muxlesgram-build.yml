@@ -9,26 +9,25 @@ jobs:
       - name: Kodni yuklash
         uses: actions/checkout@v3
 
-      - name: "Muxlesgram Rebranding (0 dan 100 gacha)"
+      - name: "Muxlesgramni noldan yaratish"
         run: |
-          # 1. Genetika (Paket nomi)
+          # 1. Paket nomi o'zgarishi
           find . -type f -exec sed -i 's/com.mattermost.rn/com.muxlesgram.app/g' {} +
           
-          # 2. Nomlar va Server (Miya)
+          # 2. Nom va Server manzili
           find . -type f -exec sed -i 's/Mattermost/Muxlesgram/g' {} +
-          find . -type f -exec sed -i 's/mattermost/muxlesgram/g' {} +
           find . -type f -name "*.js" -exec sed -i 's|http://localhost:8065|https://gossip-shortly-businesses-appraisal.trycloudflare.com|g' {} +
           
-          # 3. Dizayn (Tim Qora va Yumaloq burchaklar)
+          # 3. Tim qora dizayn
           find . -type f -name "*.js" -exec sed -i "s/#166de0/#000000/g" {} +
           find . -type f -name "*.js" -exec sed -i "s/#3d3c40/#1a1a1a/g" {} +
-          find . -type f -name "*.js" -exec sed -i "s/border-radius: 4px/border-radius: 12px/g" {} +
           
-          # 4. Global Tillarni avtomatik ulanishi
+          # 4. Global tillar va O'zbek tili
           find . -type f -name "i18n.js" -exec sed -i 's/enabledLanguages: \[.*\]/enabledLanguages: ["all"]/g' {} +
           find . -type f -name "i18n.js" -exec sed -i "s/fallbackLocale: 'en'/fallbackLocale: 'uz'/g" {} +
 
-      - name: "Muxlesgram APK-ni yig'ish"
+      - name: "APKni yig'ish"
         run: |
           chmod +x ./android/gradlew
           cd android && ./gradlew assembleRelease
+
